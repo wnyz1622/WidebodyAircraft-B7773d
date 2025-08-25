@@ -146,19 +146,13 @@
     "type": "callout",
     "description": "Cargo locks ensure that ULD untied remain secure in the hold after loading"
   },
+  
   {
-    "node": "22_PotableWaterAccessPanel",
-    "title": "Potable Water Access Panel",
-    "camera": "Cam_22_PotableWaterAccessPanel",
+    "node": "23_PneumaticAirstartPanels",
+    "title": "Pneumatic Airstart Panels",
+    "camera": "Cam_23_PneumaticAirstartPanels",
     "type": "callout",
-    "description": "Potable water access panel (exterior search only)"
-  },
-  {
-    "node": "23_GPUAccessPanelAuxilary",
-    "title": "GPU Access Panel Auxilary",
-    "camera": "Cam_23_GPUAccessPanelAuxilary",
-    "type": "callout",
-    "description": "Aircraft maintenance required to acceess this panel"
+    "description": "Access panel to connect the Pneumatic airstart (exterior search)"
   },
   {
     "node": "24_PCAirAccessPanel",
@@ -174,7 +168,13 @@
     "type": "callout",
     "description": "Beacon indicates the aircraft is moving or movement is eminent. Also means that the engines are running or about to start."
   },
- 
+  {
+    "node": "26_BulkPitCargoDoorHandle",
+    "title": "Bulk Pit Cargo Door Handle",
+    "camera": "Cam_26_BulkPitCargoDoorHandle",
+    "type": "callout",
+    "description": "Used to open and close the door of the bulk pit"
+  },
   {
     "node": "27_BulkPitCargoDoor",
     "title": "Bulk Pit Cargo Door",

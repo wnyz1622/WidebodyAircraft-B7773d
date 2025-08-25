@@ -68,12 +68,39 @@ class HotspotManager {
         this.lastCameraPosition = new THREE.Vector3();
         this.lastCameraQuaternion = new THREE.Quaternion();
 
+        // Mobile state tracking to prevent flicker
+        this.isMobile = undefined;
+        this.lastWindowWidth = undefined;
+        this.lastWindowHeight = undefined;
+        
+        // Initialize mobile state immediately (CSS classes already set by HTML script)
+        this.isMobile = document.documentElement.classList.contains('is-mobile');
+
         this.hasLoggedRendererInfo = false;
 
     }
 
+    checkMobileState() {
+        // Use the CSS class set by the matchMedia script instead of window dimensions
+        const newMobileState = document.documentElement.classList.contains('is-mobile');
+        
+        // Only update if mobile state actually changed
+        if (this.isMobile !== newMobileState) {
+            this.isMobile = newMobileState;
+            // Update body class for CSS targeting (keep for compatibility)
+            document.body.classList.toggle('mobile-view', this.isMobile);
+        }
+        
+        this.lastWindowWidth = window.innerWidth;
+        this.lastWindowHeight = window.innerHeight;
+    }
+
     async init() {
         console.log('Initializing...');
+        
+        // Ensure mobile state is set early
+        this.checkMobileState();
+        
         // Create scene
         this.scene = new THREE.Scene();
         this.clock = new THREE.Clock();
@@ -120,14 +147,14 @@ class HotspotManager {
         // Create renderer
         this.renderer = new WebGLRenderer({
             powerPreference: "high-performance",
-            antialias: window.devicePixelRatio <= 1,
+            antialias: false,
             stencil: false,
             depth: true,
             alpha: false,
             //preserveDrawingBuffer: false
         });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.setPixelRatio(1);
+        this.renderer.setPixelRatio(isMobile ? 1 : Math.min(window.devicePixelRatio, 1.5));
         this.renderer.outputEncoding = SRGBColorSpace;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -356,7 +383,7 @@ class HotspotManager {
             };
 
 
-            const modelPath = 'media/model/B787_v1.glb';
+            const modelPath = 'media/model/B777_v1.glb';
             console.log('Loading model from:', modelPath);
 
             // this.loader.load(modelPath, (gltf) => {
@@ -1258,6 +1285,12 @@ class HotspotManager {
         this.cameraChanged = false;
         this.controlsChanged = false;
 
+        // Cache mobile state ONCE per update cycle, not per hotspot
+        // Since mobile state is now set by matchMedia, we only need to check on window size change
+        if (this.isMobile === undefined || this.lastWindowWidth !== window.innerWidth || this.lastWindowHeight !== window.innerHeight) {
+            this.checkMobileState();
+        }
+
 
         // Always raycast every frame for more stable results
         this.hotspots.forEach((hotspot) => {
@@ -1302,26 +1335,27 @@ class HotspotManager {
                 hotspot.info.style.display = showInfo ? 'block' : 'none';
             }
 
-
-
-            function isMobileView() {
-                return window.innerWidth < 600 || window.innerHeight < 400;
-            }
-
-            if (isMobileView()) {
-                if (hotspot === this.selectedHotspot) {
+            // Handle mobile-fixed positioning (using cached mobile state)
+            const shouldBeMobileFixed = this.isMobile && hotspot === this.selectedHotspot;
+            const currentlyMobileFixed = hotspot.info.classList.contains('mobile-fixed');
+            
+            // Only update if state actually changed
+            if (shouldBeMobileFixed !== currentlyMobileFixed) {
+                if (shouldBeMobileFixed) {
                     hotspot.info.classList.add('mobile-fixed');
                     hotspot.info.style.left = '';
                     hotspot.info.style.top = '';
                 } else {
                     hotspot.info.classList.remove('mobile-fixed');
-                    if (hotspot.info.style.left !== `${x + 20}px`) hotspot.info.style.left = `${x + 20}px`;
-                    if (hotspot.info.style.top !== `${y}px`) hotspot.info.style.top = `${y}px`;
                 }
-            } else {
-                hotspot.info.classList.remove('mobile-fixed');
-                if (hotspot.info.style.left !== `${x + 20}px`) hotspot.info.style.left = `${x + 20}px`;
-                if (hotspot.info.style.top !== `${y}px`) hotspot.info.style.top = `${y}px`;
+            }
+            
+            // Only update positioning if not in mobile-fixed mode and position changed
+            if (!shouldBeMobileFixed) {
+                const newLeft = `${x + 20}px`;
+                const newTop = `${y}px`;
+                if (hotspot.info.style.left !== newLeft) hotspot.info.style.left = newLeft;
+                if (hotspot.info.style.top !== newTop) hotspot.info.style.top = newTop;
             }
         });
     }
@@ -1334,6 +1368,11 @@ class HotspotManager {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(1); // or just 1.0 for testing
 
+        // Force mobile state recalculation on resize
+        this.isMobile = undefined;
+        this.lastWindowWidth = undefined;
+        this.lastWindowHeight = undefined;
+        this.checkMobileState();
 
         // Update composer
         this.composer.setSize(window.innerWidth, window.innerHeight);

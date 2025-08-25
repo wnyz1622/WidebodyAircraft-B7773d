@@ -2,18 +2,18 @@
 <html lang="en">
 
 <head>
-    <title>Widebody Aircraft Boeing 787</title>
+    <title>Widebody Aircraft Boeing 777</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap" rel="stylesheet">
-    <!-- <link rel="stylesheet" href="styles.css"> -->
+    <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 
 <body>
     <div class="top-header">
         <img src="media/logo.png" alt="Logo" class="logo" />
-        <h1 class="header-title">Widebody Aircraft Boeing 787</h1>
+        <h1 class="header-title">Widebody Aircraft Boeing 777</h1>
 
     </div>
     <div id="container"></div>
@@ -73,6 +73,23 @@
     "postprocessing": "https://cdn.jsdelivr.net/npm/@pmndrs/postprocessing@6.37.4/build/postprocessing.esm.js"
   }
 }
+</script>
+
+<script>
+    (function () {
+      const mql = window.matchMedia('(pointer: coarse)');
+
+      function apply(e) {
+        // Put the flag on <html> so it exists even before <body> is parsed
+        document.documentElement.classList.toggle('is-mobile', e.matches);
+        document.documentElement.classList.toggle('is-desktop', !e.matches);
+      }
+
+      apply(mql);
+      // Safari <14 fallback
+      if (mql.addEventListener) mql.addEventListener('change', apply);
+      else mql.addListener(apply);
+    }());
 </script>
 
     <script type="module" src="src/main.js"></script>

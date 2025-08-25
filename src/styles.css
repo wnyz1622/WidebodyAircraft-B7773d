@@ -48,7 +48,7 @@ canvas {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 100svh;
 }
 
 .hotspot {
@@ -63,7 +63,7 @@ canvas {
     transition: transform 0.3s ease;
     z-index: 1000;
     pointer-events: auto;
-    
+
 }
 
 .hotspot:hover {
@@ -95,7 +95,7 @@ canvas {
     overflow: hidden;
     text-overflow: ellipsis;
     user-select: none;
-    
+
 }
 
 .hotspot-info.active {
@@ -107,7 +107,14 @@ canvas {
     z-index: 1001;
 }
 
-  
+/* Prevent the desktop active rule from applying when mobile-fixed is present */
+.hotspot-info.active:not(.mobile-fixed) {
+    height: auto;
+    width: 350px;
+    white-space: normal;
+}
+
+
 .hotspot-info .closeSpecIcon {
     position: absolute;
     top: 12px;
@@ -155,7 +162,8 @@ canvas {
 
 
 @media (max-width: 600px) {
-    .hotspot-info.active.mobile-fixed {
+
+    /* .hotspot-info.active.mobile-fixed {
         position: fixed;
         bottom: 0px;
         left: 0px;
@@ -168,56 +176,77 @@ canvas {
         z-index: 1002;
 
 
+    } */
+    .hotspot-info.mobile-fixed,
+    .hotspot-info.mobile-fixed.active,
+    .is-mobile .hotspot-info.mobile-fixed,
+    .is-mobile .hotspot-info.mobile-fixed.active {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: env(safe-area-inset-bottom, 0);
+        width: auto;
+        height: 200px;
+        transform: none;
+        padding: 30px;
+        border-radius: 0;
+        z-index: 1002;
+        white-space: normal;
+        /* ensure wrapping on mobile */
+        overflow: hidden;
     }
 
-    .hotspot-info .text-scroll {
-        height: 150px;
-        /* 200px - 150px */
-        overflow-y: auto;
-        margin: 0px;
-    }
 
-    .hotspot-info .bottom-blocker {
-        height: 150px;
-        margin: 0px;
-        flex-shrink: 0;
-        background: transparent;
-        /* or use a semi-opaque background if needed */
-    }
+.hotspot-info .text-scroll {
+    height: 150px;
+    /* 200px - 150px */
+    overflow-y: auto;
+    margin: 0px;
+}
 
-    .hotspot-description {
-        font-size: 9pt;
-        /* or 14px or smaller if needed */
-        line-height: 1.4em;
-    }
+.hotspot-info .bottom-blocker {
+    height: 150px;
+    margin: 0px;
+    flex-shrink: 0;
+    background: transparent;
+    /* or use a semi-opaque background if needed */
+}
 
-    .hotspot-title {
-        font-size: 11pt;
-    }
+.hotspot-description {
+    font-size: 9pt;
+    /* or 14px or smaller if needed */
+    line-height: 1.4em;
+}
 
-    #mouse-control {
-        display: none;
-    }
+.hotspot-title {
+    font-size: 11pt;
+}
 
-    #fullscreenBtn {
-        display: none;
-    }
+#mouse-control {
+    display: none;
+}
 
-    .button-column {
-        top: 80px;
-        flex-direction: row;
-    }
-    .hotspot {
-        width: 18px;
-        height: 18px;
-    }
-    .button-column {
-        gap: 15px;
-    }
+#fullscreenBtn {
+    display: none;
+}
+
+.button-column {
+    top: 80px;
+    flex-direction: row;
+}
+
+.hotspot {
+    width: 18px;
+    height: 18px;
+}
+
+.button-column {
+    gap: 15px;
+}
 }
 
 @media (max-width: 900px) and (orientation: landscape) {
-    .hotspot-info.mobile-fixed {
+    /* .hotspot-info.mobile-fixed {
         position: fixed;
         top: 70px;
         right: 20px;
@@ -227,11 +256,25 @@ canvas {
         z-index: 1002;
         height: auto;
         width: 35%;
-    }
+    } */
+     .hotspot-info.mobile-fixed,
+  .hotspot-info.mobile-fixed.active {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    height: auto;
+    width: 35%;
+    overflow-y: auto;
+    z-index: 1002;
+    white-space: normal;
+  }
+
+
     .hotspot {
         width: 18px;
         height: 18px;
     }
+
     .hotspot-description {
         font-size: 8pt;
         line-height: 1.4em;
@@ -240,6 +283,7 @@ canvas {
     .hotspot-title {
         font-size: 10pt;
     }
+
     #mouse-control {
         display: none;
     }
@@ -251,12 +295,14 @@ canvas {
     .button-column {
         top: 70px;
         flex-direction: row;
-        
+
     }
+
     .icon-button img {
         width: 18px;
         height: 18px;
     }
+
     .button-column {
         gap: 2px;
     }
@@ -474,7 +520,7 @@ canvas {
     max-height: calc(100% - 56px);
     /* allow full height minus header */
     max-width: fit-content;
-    
+
     overflow-y: auto;
     font-family: 'Noto Sans', sans-serif;
     z-index: 1005;
